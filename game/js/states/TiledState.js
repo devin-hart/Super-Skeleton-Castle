@@ -12,15 +12,15 @@ Platformer.TiledState.prototype.constructor = Platformer.TiledState;
 Platformer.TiledState.prototype.init = function (level_data) {
     "use strict";
     this.level_data = level_data;
-    
+
     this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
     this.scale.pageAlignHorizontally = true;
     this.scale.pageAlignVertically = true;
-    
+
     // start physics system
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
     this.game.physics.arcade.gravity.y = 1000;
-    
+
     // create map and set tileset
     this.map = this.game.add.tilemap(level_data.map.key);
     this.map.addTilesetImage(this.map.tilesets[0].name, level_data.map.tileset);
@@ -29,7 +29,7 @@ Platformer.TiledState.prototype.init = function (level_data) {
 Platformer.TiledState.prototype.create = function () {
     "use strict";
     var group_name, object_layer, collision_tiles;
-    
+
     // create map layers
     this.layers = {};
     this.map.layers.forEach(function (layer) {
@@ -49,21 +49,23 @@ Platformer.TiledState.prototype.create = function () {
     }, this);
     // resize the world to be the size of the current layer
     this.layers[this.map.layer.name].resizeWorld();
-    
+
     // create groups
     this.groups = {};
     this.level_data.groups.forEach(function (group_name) {
         this.groups[group_name] = this.game.add.group();
     }, this);
-    
+
     this.prefabs = {};
-    
+
     for (object_layer in this.map.objects) {
         if (this.map.objects.hasOwnProperty(object_layer)) {
             // create layer objects
             this.map.objects[object_layer].forEach(this.create_object, this);
         }
     }
+
+    this.game.camera.follow(this.prefabs.player);
 };
 
 Platformer.TiledState.prototype.create_object = function (object) {

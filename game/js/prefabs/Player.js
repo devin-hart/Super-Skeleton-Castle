@@ -3,20 +3,20 @@ var Platformer = Platformer || {};
 Platformer.Player = function (game_state, position, properties) {
     "use strict";
     Platformer.Prefab.call(this, game_state, position, properties);
-    
+
     this.walking_speed = +properties.walking_speed;
     this.jumping_speed = +properties.jumping_speed;
     this.bouncing = +properties.bouncing;
-    
+
     this.game_state.game.physics.arcade.enable(this);
     this.body.collideWorldBounds = true;
-    
+
     this.animations.add("walking", [0, 1, 2, 1], 6, true);
-    
+
     this.frame = 3;
-    
+
     this.anchor.setTo(0.5);
-    
+
     this.cursors = this.game_state.game.input.keyboard.createCursorKeys();
 };
 
@@ -27,7 +27,7 @@ Platformer.Player.prototype.update = function () {
     "use strict";
     this.game_state.game.physics.arcade.collide(this, this.game_state.layers.collision);
     this.game_state.game.physics.arcade.collide(this, this.game_state.groups.enemies, this.hit_enemy, null, this);
-    
+
     if (this.cursors.right.isDown && this.body.velocity.x >= 0) {
         // move right
         this.body.velocity.x = this.walking_speed;
@@ -44,12 +44,12 @@ Platformer.Player.prototype.update = function () {
         this.animations.stop();
         this.frame = 3;
     }
-    
+
     // jump only if touching a tile
     if (this.cursors.up.isDown && this.body.blocked.down) {
         this.body.velocity.y = -this.jumping_speed;
     }
-    
+
     // dies if touches the end of the screen
     if (this.bottom >= this.game_state.game.world.height) {
         this.game_state.restart_level();

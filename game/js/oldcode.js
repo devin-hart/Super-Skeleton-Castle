@@ -1,4 +1,6 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {
+// NES Res 256, 240
+
+var game = new Phaser.Game(256, 240,  Phaser.AUTO, '', {
   preload: preload,
   create: create,
   update: update
@@ -7,17 +9,14 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {
 function preload() {
 
 // Tilemaps
-  game.load.tilemap('level1', 'assets/levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
+  game.load.tilemap('level1', 'assets/levels/level1_map_final.json', null, Phaser.Tilemap.TILED_JSON);
 
 // Images
-  game.load.image('tiles-1', 'assets/images/tiles-1.png');
-  game.load.image('sky', 'assets/images/sky.png');
-  game.load.image('ground', 'assets/images/platform.png');
+  game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
   game.load.image('paper', 'assets/images/paper.png');
 
 // Spritesheets
-  game.load.spritesheet('dude', 'assets/images/dude1.png', 32, 48);
-  game.load.spritesheet('enemy', 'assets/images/baddie.png', 32, 32);
+  game.load.spritesheet('dude', 'assets/images/SP_player_spritesheet.png', 16, 16);
 
 // Audio
   game.load.audio('music', 'assets/audio/music.mp3');
@@ -53,12 +52,12 @@ function create() {
 
   map = game.add.tilemap('level1');
 
-  map.addTilesetImage('tiles-1');
+  map.addTilesetImage('simples_pimples');
 
   // map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
   layer = map.createLayer('Tile Layer 1');
-  map.setCollision(1);
+  map.setCollisionByExclusion([0]);
   //  Un-comment this on to see the collision tiles
   // layer.debug = true;
 
@@ -67,23 +66,17 @@ function create() {
   // The player and its settings
   player = game.add.sprite(32, game.world.height - 150, 'dude');
 
-  enemy = game.add.sprite(32, game.world.height - 150, 'enemy');
-
-  enemy.enableBody = true;
-
   //  We need to enable physics on the player
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
 
-  game.physics.arcade.enable(enemy, Phaser.Physics.ARCADE);
-
   //  Player physics properties. Give the little guy a slight bounce.
   player.body.bounce.y = 0;
-  player.body.gravity.y = 300;
+  player.body.gravity.y = 1500;
   player.body.collideWorldBounds = true;
 
   //  Our two animations, walking left and right.
-  player.animations.add('left', [0, 1, 2, 3], 10, true);
-  player.animations.add('right', [5, 6, 7, 8], 10, true);
+  player.animations.add('left', [0, 1], 10, true);
+  player.animations.add('right', [4, 5], 10, true);
 
   game.camera.follow(player);
 
@@ -119,8 +112,26 @@ function create() {
   // Audio
   music = game.add.audio('music');
   music.play();
+  music.loopFull();
 
   jumpSound = game.add.audio('jump');
+
+  game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+  game.input.onDown.add(gofull, this);
+}
+
+function gofull() {
+
+    if (game.scale.isFullScreen)
+    {
+        game.scale.stopFullScreen();
+    }
+    else
+    {
+        game.scale.startFullScreen(false);
+    }
+
 }
 
 function update() {
@@ -137,19 +148,19 @@ function update() {
 
   if (controls.left.isDown) {
     //  Move to the left
-    player.body.velocity.x = -150;
+    player.body.velocity.x = -100;
 
     player.animations.play('left');
   } else if (controls.right.isDown) {
     //  Move to the right
-    player.body.velocity.x = 150;
+    player.body.velocity.x = 100;
 
     player.animations.play('right');
   } else {
     //  Stand still
     player.animations.stop();
 
-    player.frame = 4;
+    player.frame = 3;
   }
 
   //  Allow the player to jump if they are touching the ground.

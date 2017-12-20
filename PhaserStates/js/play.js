@@ -10,6 +10,9 @@ var playState = {
     this.win = game.add.sprite(256, 256, 'win');
     game.physics.enable(this.win, Phaser.Physics.ARCADE);
 
+    this.player.animations.add('left', [0, 1], 5, true);
+    this.player.animations.add('right', [4, 5], 5, true);
+
   },
 
   update: function () {

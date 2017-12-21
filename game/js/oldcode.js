@@ -6,6 +6,8 @@ var game = new Phaser.Game(256, 240,  Phaser.AUTO, '', {
   update: update
 });
 
+game.state.add('game', game);
+
 function preload() {
 
 // Tilemaps
@@ -70,9 +72,9 @@ function create() {
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
 
   //  Player physics properties. Give the little guy a slight bounce.
-  player.body.bounce.y = 0;
+  player.body.bounce.y = 0.1;
   player.body.gravity.y = 1500;
-  player.body.collideWorldBounds = true;
+  // player.body.collideWorldBounds = true;
 
   //  Our two animations, walking left and right.
   player.animations.add('left', [0, 1], 10, true);
@@ -121,19 +123,6 @@ function create() {
   game.input.onDown.add(gofull, this);
 }
 
-function gofull() {
-
-    if (game.scale.isFullScreen)
-    {
-        game.scale.stopFullScreen();
-    }
-    else
-    {
-        game.scale.startFullScreen(false);
-    }
-
-}
-
 function update() {
 
   //  Collide the player and the papers with the platforms
@@ -170,6 +159,10 @@ function update() {
 
   }
 
+  if (!player.inWorld) {
+    playerDie();
+}
+
 }
 
 function collectPaper(player, paper) {
@@ -184,5 +177,27 @@ function collectPaper(player, paper) {
   if (score === 10) {
     scoreText.text = "You win!"
   };
+
+}
+
+function gofull() {
+
+    if (game.scale.isFullScreen)
+    {
+        game.scale.stopFullScreen();
+    }
+    else
+    {
+        game.scale.startFullScreen(false);
+    }
+
+}
+
+function playerDie() {
+  score = 0;
+  music.stop();
+
+  game.state.start(game.state.current);
+
 
 }

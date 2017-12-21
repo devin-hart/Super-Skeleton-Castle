@@ -45,6 +45,7 @@ var jumpButton;
 var enemy;
 var spike;
 var bat;
+var batGroup;
 
 // SFX vars
 var music;
@@ -80,18 +81,9 @@ function create() {
   // The player and its settings
   player = game.add.sprite(32, game.world.height - 150, 'dude');
 
-  bat = game.add.sprite(48, game.world.height - 100, 'bat');
-
   //  We need to enable physics on the player
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
-  game.physics.arcade.enable(bat, Phaser.Physics.ARCADE);
-
-  // Removes bat if out of world bounds
-  bat.checkWorldBounds = true;
-  bat.outOfBoundsKill = true;
-
-  bat.body.velocity.x = -10;
-
+  game.camera.follow(player);
 
   //  Player physics properties.
   player.body.bounce.y = 0.1;
@@ -103,8 +95,21 @@ function create() {
   player.animations.add('left', [0, 1], 10, true);
   player.animations.add('right', [4, 5], 10, true);
 
+
+
+  bat = game.add.sprite(464, 32, 'bat');
+
+  batGroup = game.add.group();
+
+  game.physics.arcade.enable(bat, Phaser.Physics.ARCADE);
+  // Removes bat if out of world bounds
+  bat.checkWorldBounds = true;
+  bat.outOfBoundsKill = true;
+
+// bat.body.velocity.x = -10;
+
   bat.animations.add('fly-left', [0, 1], 5, true);
-  bat.animations.add('right', [2, 3], 10, true);
+  bat.animations.add('fly-right', [2, 3], 10, true);
   bat.play('fly-left');
   bat.body.moves = false;
 
@@ -112,27 +117,26 @@ function create() {
 
   // bat.body.gravity.y = 300;
 
-  game.camera.follow(player);
 
   // Spikes
-  spike = [game.add.sprite(416, 112, 'spike'),
-          game.add.sprite(432, 112, 'spike'),
-          game.add.sprite(448, 112, 'spike'),
-          game.add.sprite(480, 112, 'spike'),
-          game.add.sprite(496, 112, 'spike'),
-          game.add.sprite(528, 112, 'spike'),
-          game.add.sprite(544, 112, 'spike')];
+  spike = [ game.add.sprite(416, 112, 'spike'),
+            game.add.sprite(432, 112, 'spike'),
+            game.add.sprite(448, 112, 'spike'),
+            game.add.sprite(480, 112, 'spike'),
+            game.add.sprite(496, 112, 'spike'),
+            game.add.sprite(528, 112, 'spike'),
+            game.add.sprite(544, 112, 'spike') ];
 
   spike.enablebody = true;
   game.physics.arcade.enable(spike, Phaser.Physics.ARCADE);
 
-  //  Finally some papers to collect
+  //  Papers to collect
   papers = game.add.group();
 
   //  We will enable physics for any paper that is created in this group
   papers.enableBody = true;
 
-  //  Here we'll create 12 of them evenly spaced apart
+  //  Here we'll create 10 of them evenly spaced apart
   for (var i = 0; i < 10; i++) {
     //  Create a paper inside of the 'papers' group
     var paper = papers.create(i * 70, 0, 'paper');
@@ -211,12 +215,26 @@ function update() {
     playerDie();
 }
 
+game.physics.arcade.collide(player, bat, function(player, bat){
+
+  if(bat.body.touching.up && player.body.touching.down){
+
+      // in this case just jump again
+      player.body.velocity.y =  -50;
+      bat.kill();
+  } else {
+
+    playerDie();
+
+  }
+}, null, this);
+
 }
 
 function render() {
 
     // Sprite debug info
-    // game.debug.spriteInfo(player, 32, 32);
+    game.debug.spriteInfo(player, 32, 32);
 
 }
 

@@ -1,6 +1,6 @@
 // NES Res 256, 240
 
-var game = new Phaser.Game(256, 240,  Phaser.AUTO, '', {
+var game = new Phaser.Game(256, 240, Phaser.AUTO, '', {
   preload: preload,
   create: create,
   update: update,
@@ -16,9 +16,10 @@ function preload() {
 
 // Images
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
+  game.load.image('neon_tilest', 'assets/images/neon_tileset.png');
   game.load.image('paper', 'assets/images/paper.png');
   game.load.image('spike', 'assets/images/spike.png');
-  game.load.image('background', 'assets/images/cityscape.png');
+  game.load.image('background', 'assets/images/bg_grad.png');
 
 // Spritesheets
   game.load.spritesheet('dude', 'assets/images/SP_player_spritesheet.png', 16, 16);
@@ -61,13 +62,14 @@ function create() {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  game.stage.backgroundColor = '#000000';
-  // bg = game.add.tileSprite(0, 0, 1000, 600, 'background');
-  // bg.fixedToCamera = true;
+  // game.stage.backgroundColor = '#007800';
+  bg = game.add.tileSprite(0, 0, 1000, 600, 'background');
+  bg.fixedToCamera = true;
 
   map = game.add.tilemap('level1');
 
   map.addTilesetImage('simples_pimples');
+  map.addTilesetImage('neon_tilest');
 
   // map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
@@ -98,6 +100,9 @@ function create() {
 
 
   bat = game.add.sprite(464, 32, 'bat');
+        game.add.existing(bat);
+        game.add.sprite(512, 32, 'bat');
+        game.add.existing(bat);
 
   batGroup = game.add.group();
 
@@ -109,7 +114,7 @@ function create() {
 // bat.body.velocity.x = -10;
 
   bat.animations.add('fly-left', [0, 1], 5, true);
-  bat.animations.add('fly-right', [2, 3], 10, true);
+  bat.animations.add('fly-right', [2, 3], 5, true);
   bat.play('fly-left');
   bat.body.moves = false;
 
@@ -234,7 +239,7 @@ game.physics.arcade.collide(player, bat, function(player, bat){
 function render() {
 
     // Sprite debug info
-    game.debug.spriteInfo(player, 32, 32);
+    // game.debug.spriteInfo(player, 32, 32);
 
 }
 

@@ -26,6 +26,7 @@ function preload() {
 // Spritesheets
   game.load.spritesheet('dude', 'assets/images/SP_player_spritesheet.png', 16, 16);
   game.load.spritesheet('bat', 'assets/images/bat.png', 16, 16);
+  game.load.spritesheet('ghost', 'assets/images/ghost.png', 16, 16);
 
 // Audio
   game.load.audio('music', 'assets/audio/music.mp3');
@@ -49,6 +50,7 @@ var enemy;
 var spike;
 var bat;
 var batGroup;
+var ghostGroup;
 
 // SFX vars
 var music;
@@ -61,6 +63,8 @@ var scoreText;
 
 
 function create() {
+
+  // game.world.setBounds(-1000, -1000, 2000, 2000);
 
   // game.stage.backgroundColor = '#007800';
   bg = game.add.tileSprite(0, 0, 1000, 600, 'background');
@@ -127,8 +131,21 @@ function create() {
   // batGroup.body.moves = false;
   batGroup.create(464, 32, 'bat');
   batGroup.create(512, 32, 'bat');
-  batGroup.callAll('animations.add', 'animations', 'fly-left', [0, 1], 5, true);
-  batGroup.callAll('animations.play', 'animations', 'fly-left');
+  batGroup.callAll('animations.add', 'animations', 'bat-left', [0, 1], 5, true);
+  batGroup.callAll('animations.play', 'animations', 'bat-left');
+
+  ghostGroup = game.add.physicsGroup();
+  game.physics.arcade.enable(ghostGroup, Phaser.Physics.ARCADE);
+  ghostGroup.enableBody = true;
+  ghostGroup.checkWorldBounds = true;
+  ghostGroup.outOfBoundsKill = true;
+  ghostGroup.create(32, 208, 'ghost');
+  ghostGroup.callAll('animations.add', 'animations', 'ghost-left', [0, 1, 2], 5, true);
+  ghostGroup.callAll('animations.play', 'animations', 'ghost-left');
+  // ghostGroup.body.gravity.y = 0;
+  ghostGroup.body.velocity.x = -10;
+
+
 
   // Spikes
   spike = [ game.add.sprite(416, 112, 'spike'),
@@ -246,7 +263,7 @@ game.physics.arcade.collide(player, batGroup, function(player, batGroup){
 function render() {
 
     // Sprite debug info
-    // game.debug.spriteInfo(player, 32, 32);
+    game.debug.spriteInfo(player, 32, 32);
 
 }
 

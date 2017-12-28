@@ -139,11 +139,14 @@ function create() {
   ghostGroup.enableBody = true;
   ghostGroup.checkWorldBounds = true;
   ghostGroup.outOfBoundsKill = true;
-  ghostGroup.create(32, 208, 'ghost');
+  ghostGroup.create(48, 100, 'ghost');
   ghostGroup.callAll('animations.add', 'animations', 'ghost-left', [0, 1, 2], 5, true);
   ghostGroup.callAll('animations.play', 'animations', 'ghost-left');
   // ghostGroup.body.gravity.y = 0;
-  ghostGroup.body.velocity.x = -10;
+  // ghostGroup.body.velocity.x = -10;
+  ghostGroup.forEach(function(ghostGroup) {
+    ghostGroup.body.velocity.x = -25;
+  });
 
 
 
@@ -211,10 +214,16 @@ function update() {
   //  Checks to see if the player overlaps with any of the papers, if he does call the collectPaper function
   game.physics.arcade.overlap(player, papers, collectPaper, null, this);
   game.physics.arcade.overlap(player, spike, playerDie, null, this);
+  game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
   // game.physics.arcade.overlap(player, bat, playerDie, null, this);
 
   //  Reset the players velocity (movement)
   player.body.velocity.x = 0;
+  // ghostGroup.body.velocity.x = -10;
+
+//   ghostGroup.forEach(function() {
+//     ghostGroup.body.velocity.x = -120;
+// }, this);
 
   if (controls.left.isDown) {
     //  Move to the left
@@ -263,7 +272,7 @@ game.physics.arcade.collide(player, batGroup, function(player, batGroup){
 function render() {
 
     // Sprite debug info
-    game.debug.spriteInfo(player, 32, 32);
+    // game.debug.spriteInfo(player, 32, 32);
 
 }
 

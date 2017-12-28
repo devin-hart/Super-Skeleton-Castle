@@ -78,11 +78,14 @@ function create() {
   // map.setCollisionByExclusion([ 13, 14, 15, 16, 46, 47, 48, 49, 50, 51 ]);
 
   layer = map.createLayer('Tile Layer 1');
-  map.setCollisionByExclusion([0]);
+  layer.resizeWorld();
+
+
+  map.setCollisionByExclusion([0, 1758]);
   //  Un-comment this on to see the collision tiles
   // layer.debug = true;
 
-  layer.resizeWorld();
+
 
   // The player and its settings
   player = game.add.sprite(32, game.world.height - 150, 'dude');

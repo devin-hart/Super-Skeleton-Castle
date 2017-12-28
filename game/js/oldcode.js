@@ -11,6 +11,8 @@ game.state.add('game', game);
 
 function preload() {
 
+  game.physics.startSystem(Phaser.Physics.ARCADE);
+
 // Tilemaps
   game.load.tilemap('level1', 'assets/levels/level1_map_final.json', null, Phaser.Tilemap.TILED_JSON);
 
@@ -60,8 +62,6 @@ var scoreText;
 
 function create() {
 
-  game.physics.startSystem(Phaser.Physics.ARCADE);
-
   // game.stage.backgroundColor = '#007800';
   bg = game.add.tileSprite(0, 0, 1000, 600, 'background');
   bg.fixedToCamera = true;
@@ -99,29 +99,36 @@ function create() {
 
 
 
-  bat = game.add.sprite(464, 32, 'bat');
-        game.add.existing(bat);
-        game.add.sprite(512, 32, 'bat');
-        game.add.existing(bat);
+  // bat = game.add.sprite(464, 32, 'bat');
+  //       // game.add.existing(bat);
+  //       // game.add.sprite(512, 32, 'bat');
+  //       // game.add.existing(bat);
 
-  batGroup = game.add.group();
 
-  game.physics.arcade.enable(bat, Phaser.Physics.ARCADE);
-  // Removes bat if out of world bounds
-  bat.checkWorldBounds = true;
-  bat.outOfBoundsKill = true;
 
-// bat.body.velocity.x = -10;
-
-  bat.animations.add('fly-left', [0, 1], 5, true);
-  bat.animations.add('fly-right', [2, 3], 5, true);
-  bat.play('fly-left');
-  bat.body.moves = false;
-
-  bat.enableBody = true;
+//   game.physics.arcade.enable(bat, Phaser.Physics.ARCADE);
+//   // Removes bat if out of world bounds
+//   bat.checkWorldBounds = true;
+//   bat.outOfBoundsKill = true;
+//
+// // bat.body.velocity.x = -10;
+//
+//   bat.animations.add('fly-left', [0, 1], 5, true);
+//   bat.animations.add('fly-right', [2, 3], 5, true);
+//   bat.play('fly-left');
+//   bat.body.moves = false;
+//
+//   bat.enableBody = true;
 
   // bat.body.gravity.y = 300;
-
+  batGroup = game.add.group();
+  game.physics.arcade.enable(batGroup, Phaser.Physics.ARCADE);
+  batGroup.enableBody = true;
+  // batGroup.body.moves = false;
+  batGroup.create(464, 32, 'bat');
+  batGroup.create(512, 32, 'bat');
+  batGroup.callAll('animations.add', 'animations', 'fly-left', [0, 1], 5, true);
+  batGroup.callAll('animations.play', 'animations', 'fly-left');
 
   // Spikes
   spike = [ game.add.sprite(416, 112, 'spike'),
@@ -182,7 +189,7 @@ function update() {
   //  Collide the player and the papers with the platforms
   game.physics.arcade.collide(player, layer);
   game.physics.arcade.collide(papers, layer);
-  game.physics.arcade.collide(bat, layer);
+  game.physics.arcade.collide(batGroup, layer);
 
   //  Checks to see if the player overlaps with any of the papers, if he does call the collectPaper function
   game.physics.arcade.overlap(player, papers, collectPaper, null, this);
@@ -220,13 +227,13 @@ function update() {
     playerDie();
 }
 
-game.physics.arcade.collide(player, bat, function(player, bat){
+game.physics.arcade.collide(player, batGroup, function(player, batGroup){
 
-  if(bat.body.touching.up && player.body.touching.down){
+  if(batGroup.body.touching.up && player.body.touching.down){
 
       // in this case just jump again
       player.body.velocity.y =  -50;
-      bat.kill();
+      batGroup.kill();
   } else {
 
     playerDie();

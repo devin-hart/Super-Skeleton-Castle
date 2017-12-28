@@ -2,7 +2,7 @@ var menuState = {
 
   create: function() {
 
-    var nameLabel = game.add.text(80, 80, 'Game', {
+    var nameLabel = game.add.text(80, 80, 'Final Project', {
       font: '50px Arial',
       fill: '#FFFFFF'
     });

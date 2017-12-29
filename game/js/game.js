@@ -13,21 +13,21 @@ function preload() {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  // Tilemaps
+// Tilemaps
   game.load.tilemap('level1', 'assets/levels/level1_map_final.json', null, Phaser.Tilemap.TILED_JSON);
 
-  // Images
+// Images
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
   game.load.image('spikeDown', 'assets/images/spike_down.png');
   game.load.image('background', 'assets/images/bg_grad.png');
 
-  // Spritesheets
+// Spritesheets
   game.load.spritesheet('player', 'assets/images/skeletal_player.png', 16, 16);
   game.load.spritesheet('bat', 'assets/images/bat.png', 16, 16);
   game.load.spritesheet('ghost', 'assets/images/ghost.png', 16, 16);
   game.load.spritesheet('zombie', 'assets/images/zombie.png', 16, 16);
 
-  // Audio
+// Audio
   game.load.audio('music', 'assets/audio/music.mp3');
   game.load.audio('jump', 'assets/audio/jump.wav');
 
@@ -72,15 +72,15 @@ function create() {
   layer.resizeWorld();
 
   map.setCollisionByExclusion([0, 1758]);
-  //  Collision debug
+// Collision debug
   // layer.debug = true;
 
-  // Player
+// Player
   player = game.add.sprite(32, game.world.height - 150, 'player');
   // player = game.add.sprite(1070, 192, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
-  //  Player physics properties.
+// Player physics properties
   player.body.bounce.y = 0.1;
   player.body.gravity.y = 1250;
   player.body.gravity.y = 1500;
@@ -88,7 +88,7 @@ function create() {
   player.animations.add('left', [0, 1], 10, true);
   player.animations.add('right', [4, 5], 10, true);
 
-  // Bat info
+// Bat info
   batGroup = game.add.group();
   game.physics.arcade.enable(batGroup, Phaser.Physics.ARCADE);
   batGroup.enableBody = true;
@@ -97,7 +97,7 @@ function create() {
   batGroup.callAll('animations.add', 'animations', 'bat-left', [0, 1], 5, true);
   batGroup.callAll('animations.play', 'animations', 'bat-left');
 
-  // Ghost info
+// Ghost info
   ghostGroup = game.add.physicsGroup();
   game.physics.arcade.enable(ghostGroup, Phaser.Physics.ARCADE);
   ghostGroup.enableBody = true;
@@ -111,7 +111,7 @@ function create() {
     ghostGroup.body.velocity.x = -25;
   });
 
-  // Zombie info
+// Zombie info
   zombieGroup = game.add.physicsGroup();
   game.physics.arcade.enable(zombieGroup, Phaser.Physics.ARCADE);
   zombieGroup.enableBody = true;
@@ -126,7 +126,7 @@ function create() {
     zombieGroup.body.bounce.x = 1;
   });
 
-  // Spikes
+// Spikes
   spikeDown = [game.add.sprite(416, 112, 'spikeDown'),
     game.add.sprite(432, 112, 'spikeDown'),
     game.add.sprite(448, 112, 'spikeDown'),
@@ -139,7 +139,7 @@ function create() {
   spikeDown.enablebody = true;
   game.physics.arcade.enable(spikeDown, Phaser.Physics.ARCADE);
 
-  // Collectibles
+// Collectibles
   // papers = game.add.group();
   // papers.enableBody = true;
   //
@@ -149,7 +149,7 @@ function create() {
   //   paper.body.bounce.y = 0.3 + Math.random() * 0.2;
   // }
 
-  // The score
+// Score
   scoreText = game.add.text(8, 8, '000000', {
     fontSize: '12px',
     fill: '#FFFFFF'
@@ -157,58 +157,57 @@ function create() {
 
   scoreText.fixedToCamera = true;
 
-  // Player controls
+// Player controls
   controls = game.input.keyboard.createCursorKeys();
   jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
-  // Audio
+// Audio
   music = game.add.audio('music');
   music.play();
   music.loopFull();
 
   jumpSound = game.add.audio('jump');
 
-  // Click to go full screen
+// Click to go full screen
   game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
-  game.input.onDown.add(gofull);
+  game.input.onDown.add(goFullScreen);
 }
 
 function update() {
 
-  // Asset collision
+// Asset collision
   game.physics.arcade.collide(player, layer);
   game.physics.arcade.collide(batGroup, layer);
   game.physics.arcade.collide(zombieGroup, layer);
   // game.physics.arcade.collide(papers, layer);
 
-  // Overlap functions
+// Overlap functions
   game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
   game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
   // game.physics.arcade.overlap(player, papers, collectPaper, null, this);
 
-  //  Reset the players velocity (movement)
+// Reset the players velocity (movement)
   player.body.velocity.x = 0;
 
-  // Player controls
+// Player controls
   if (controls.left.isDown) {
-    //  Move to the left
+// Move to the left
     player.body.velocity.x = -100;
     player.animations.play('left');
   } else if (controls.right.isDown) {
-    //  Move to the right
+// Move to the right
     player.body.velocity.x = 100;
     player.animations.play('right');
   } else {
-    //  Stand still
+// Stand still
     player.animations.stop();
     // player.frame = 3;
   }
 
-  //  Allow the player to jump if they are touching the ground
+// Jump
   if (jumpButton.isDown && player.body.onFloor()) {
     player.body.velocity.y = -350;
     jumpSound.play();
-
   }
 
   if (!player.inWorld) {
@@ -246,7 +245,7 @@ function update() {
 }
 
 function render() {
-  // Sprite debug info
+// Sprite debug info
   // game.debug.spriteInfo(player, 32, 32);
 }
 
@@ -259,7 +258,7 @@ function render() {
 //   };
 // }
 
-function gofull() {
+function goFullScreen() {
   if (game.scale.isFullScreen) {
     game.scale.stopFullScreen();
   } else {

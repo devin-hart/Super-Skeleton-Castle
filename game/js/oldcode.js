@@ -20,13 +20,14 @@ function preload() {
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
   game.load.image('neon_tilest', 'assets/images/neon_tileset.png');
   game.load.image('paper', 'assets/images/paper.png');
-  game.load.image('spike', 'assets/images/spike.png');
+  game.load.image('spikeDown', 'assets/images/spike_down.png');
   game.load.image('background', 'assets/images/bg_grad.png');
 
 // Spritesheets
-  game.load.spritesheet('dude', 'assets/images/SP_player_spritesheet.png', 16, 16);
+  game.load.spritesheet('player', 'assets/images/skeletal_player.png', 16, 16);
   game.load.spritesheet('bat', 'assets/images/bat.png', 16, 16);
   game.load.spritesheet('ghost', 'assets/images/ghost.png', 16, 16);
+  game.load.spritesheet('zombie', 'assets/images/zombie.png', 16, 16);
 
 // Audio
   game.load.audio('music', 'assets/audio/music.mp3');
@@ -47,10 +48,11 @@ var jumpButton;
 
 // Enemy vars
 var enemy;
-var spike;
+var spikeDown;
 var bat;
 var batGroup;
 var ghostGroup;
+var zombieGroup;
 
 // SFX vars
 var music;
@@ -88,8 +90,8 @@ function create() {
 
 
   // The player and its settings
-  player = game.add.sprite(32, game.world.height - 150, 'dude');
-
+  // player = game.add.sprite(32, game.world.height - 150, 'player');
+  player = game.add.sprite(1070, 192, 'player');
   //  We need to enable physics on the player
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
@@ -151,19 +153,47 @@ function create() {
     ghostGroup.body.velocity.x = -25;
   });
 
+  zombieGroup = game.add.physicsGroup();
+  game.physics.arcade.enable(zombieGroup, Phaser.Physics.ARCADE);
+  zombieGroup.enableBody = true;
+  zombieGroup.checkWorldBounds = true;
+  zombieGroup.outOfBoundsKill = true;
+  zombieGroup.create(1120, 208, 'zombie');
+  zombieGroup.callAll('animations.add', 'animations', 'zombie-left', [0, 1, 2], 5, true);
+  zombieGroup.callAll('animations.add', 'animations', 'zombie-right', [3, 4, 5], 5, true);
+  // zombieGroup.callAll('animations.play', 'animations', 'zombie-left');
+  // zombieGroup.callAll('animations.play', 'animations', 'zombie-right');
+
+  // if (zombieGroup.body.velocity.x < 0) {
+  //   zombieGroup.callAll('animations.play', 'animations', 'zombie-left');
+  // } else {
+  //   zombieGroup.callAll('animations.play', 'animations', 'zombie-right');
+  // };
+
+
+  zombieGroup.forEach(function(zombieGroup) {
+    zombieGroup.body.velocity.x = -10;
+    zombieGroup.body.bounce.x = 1;
+    if (zombieGroup.body.velocity.x > 0) {
+      zombieGroup.animations.play('zombie-right');
+    } else {
+      zombieGroup.animations.play('zombie-left');
+    }
+  });
+
 
 
   // Spikes
-  spike = [ game.add.sprite(416, 112, 'spike'),
-            game.add.sprite(432, 112, 'spike'),
-            game.add.sprite(448, 112, 'spike'),
-            game.add.sprite(480, 112, 'spike'),
-            game.add.sprite(496, 112, 'spike'),
-            game.add.sprite(528, 112, 'spike'),
-            game.add.sprite(544, 112, 'spike') ];
+  spikeDown = [ game.add.sprite(416, 112, 'spikeDown'),
+            game.add.sprite(432, 112, 'spikeDown'),
+            game.add.sprite(448, 112, 'spikeDown'),
+            game.add.sprite(480, 112, 'spikeDown'),
+            game.add.sprite(496, 112, 'spikeDown'),
+            game.add.sprite(528, 112, 'spikeDown'),
+            game.add.sprite(544, 112, 'spikeDown') ];
 
-  spike.enablebody = true;
-  game.physics.arcade.enable(spike, Phaser.Physics.ARCADE);
+  spikeDown.enablebody = true;
+  game.physics.arcade.enable(spikeDown, Phaser.Physics.ARCADE);
 
   //  Papers to collect
   papers = game.add.group();
@@ -213,20 +243,18 @@ function update() {
   game.physics.arcade.collide(player, layer);
   game.physics.arcade.collide(papers, layer);
   game.physics.arcade.collide(batGroup, layer);
+  game.physics.arcade.collide(zombieGroup, layer);
 
   //  Checks to see if the player overlaps with any of the papers, if he does call the collectPaper function
   game.physics.arcade.overlap(player, papers, collectPaper, null, this);
-  game.physics.arcade.overlap(player, spike, playerDie, null, this);
+  game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
   game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
+  // game.physics.arcade.overlap(player, zombieGroup, playerDie, null, this);
   // game.physics.arcade.overlap(player, bat, playerDie, null, this);
 
   //  Reset the players velocity (movement)
   player.body.velocity.x = 0;
-  // ghostGroup.body.velocity.x = -10;
 
-//   ghostGroup.forEach(function() {
-//     ghostGroup.body.velocity.x = -120;
-// }, this);
 
   if (controls.left.isDown) {
     //  Move to the left
@@ -270,12 +298,28 @@ game.physics.arcade.collide(player, batGroup, function(player, batGroup){
   }
 }, null, this);
 
+game.physics.arcade.collide(player, zombieGroup, function(player, zombieGroup){
+
+  if(zombieGroup.body.touching.up && player.body.touching.down){
+
+      // in this case just jump again
+      player.body.velocity.y =  -50;
+      zombieGroup.kill();
+  } else {
+
+    playerDie();
+
+  }
+}, null, this);
+
+
+
 }
 
 function render() {
 
     // Sprite debug info
-    // game.debug.spriteInfo(player, 32, 32);
+    game.debug.spriteInfo(player, 32, 32);
 
 }
 

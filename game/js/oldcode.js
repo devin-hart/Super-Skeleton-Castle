@@ -174,11 +174,11 @@ function create() {
   zombieGroup.forEach(function(zombieGroup) {
     zombieGroup.body.velocity.x = -10;
     zombieGroup.body.bounce.x = 1;
-    if (zombieGroup.body.velocity.x > 0) {
-      zombieGroup.animations.play('zombie-right');
-    } else {
-      zombieGroup.animations.play('zombie-left');
-    }
+    // if (zombieGroup.body.velocity.x > 0) {
+    //   zombieGroup.animations.play('zombie-right');
+    // } else {
+    //   zombieGroup.animations.play('zombie-left');
+    // }
   });
 
 
@@ -312,7 +312,13 @@ game.physics.arcade.collide(player, zombieGroup, function(player, zombieGroup){
   }
 }, null, this);
 
-
+zombieGroup.forEach(function(zombieGroup) {
+  if (zombieGroup.body.velocity.x > 0) {
+    zombieGroup.animations.play('zombie-right');
+  } else {
+    zombieGroup.animations.play('zombie-left');
+  }
+});
 
 }
 

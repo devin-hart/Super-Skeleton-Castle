@@ -19,7 +19,9 @@ function preload() {
 // Images
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
   game.load.image('spikeDown', 'assets/images/spike_down.png');
+  game.load.image('spikeUp', 'assets/images/spike_up.png');
   game.load.image('background', 'assets/images/bg_grad.png');
+  game.load.image('invisWall', 'assets/images/invisible_wall.png');
 
 // Spritesheets
   game.load.spritesheet('player', 'assets/images/skeletal_player.png', 16, 16);
@@ -37,6 +39,7 @@ function preload() {
 var map;
 var layer;
 var bg;
+var invisWall;
 
 // Player vars
 var player;
@@ -61,7 +64,7 @@ var scoreText;
 function create() {
   // game.world.setBounds(-1000, -1000, 2000, 2000);
   // game.stage.backgroundColor = '#007800';
-  bg = game.add.tileSprite(0, 0, 1000, 600, 'background');
+  bg = game.add.tileSprite(0, 0, 256, 240, 'background');
   bg.fixedToCamera = true;
 
   map = game.add.tilemap('level1');
@@ -76,13 +79,12 @@ function create() {
   // layer.debug = true;
 
 // Player
-  player = game.add.sprite(32, game.world.height - 150, 'player');
-  // player = game.add.sprite(1070, 192, 'player');
+  // player = game.add.sprite(32, game.world.height - 150, 'player');
+  player = game.add.sprite(1166, 192, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
 // Player physics properties
   player.body.bounce.y = 0.1;
-  player.body.gravity.y = 1250;
   player.body.gravity.y = 1500;
   // player.body.collideWorldBounds = true;
   player.animations.add('left', [0, 1], 10, true);
@@ -124,10 +126,12 @@ function create() {
   zombieGroup.forEach(function(zombieGroup) {
     zombieGroup.body.velocity.x = -10;
     zombieGroup.body.bounce.x = 1;
+    zombieGroup.body.gravity.y = 1500;
   });
 
-// Spikes
-  spikeDown = [game.add.sprite(416, 112, 'spikeDown'),
+// Spike info
+  spikeDown = [
+    game.add.sprite(416, 112, 'spikeDown'),
     game.add.sprite(432, 112, 'spikeDown'),
     game.add.sprite(448, 112, 'spikeDown'),
     game.add.sprite(480, 112, 'spikeDown'),
@@ -138,6 +142,16 @@ function create() {
 
   spikeDown.enablebody = true;
   game.physics.arcade.enable(spikeDown, Phaser.Physics.ARCADE);
+
+// Invisible walls info
+  invisWall = game.add.group();
+  game.physics.arcade.enable(invisWall, Phaser.Physics.ARCADE);
+  invisWall.enableBody = true;
+  invisWall.immovable = true;
+  invisWall.create(1152, 208, 'invisWall');
+  invisWall.create(1072, 208, 'invisWall');
+
+
 
 // Collectibles
   // papers = game.add.group();
@@ -179,6 +193,7 @@ function update() {
   game.physics.arcade.collide(player, layer);
   game.physics.arcade.collide(batGroup, layer);
   game.physics.arcade.collide(zombieGroup, layer);
+  game.physics.arcade.collide(zombieGroup, invisWall);
   // game.physics.arcade.collide(papers, layer);
 
 // Overlap functions
@@ -246,7 +261,7 @@ function update() {
 
 function render() {
 // Sprite debug info
-  // game.debug.spriteInfo(player, 32, 32);
+  game.debug.spriteInfo(player, 16, 16);
 }
 
 // function collectPaper(player, paper) {

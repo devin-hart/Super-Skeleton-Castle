@@ -80,8 +80,8 @@ function create() {
   // layer.debug = true;
 
   // Player
-  // player = game.add.sprite(32, game.world.height - 150, 'player');
-  player = game.add.sprite(1070, 192, 'player');
+  player = game.add.sprite(32, game.world.height - 150, 'player');
+  // player = game.add.sprite(1070, 192, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
   //  Player physics properties.
@@ -127,14 +127,7 @@ function create() {
   zombieGroup.forEach(function(zombieGroup) {
     zombieGroup.body.velocity.x = -10;
     zombieGroup.body.bounce.x = 1;
-    // if (zombieGroup.body.velocity.x > 0) {
-    //   zombieGroup.animations.play('zombie-right');
-    // } else {
-    //   zombieGroup.animations.play('zombie-left');
-    // }
   });
-
-
 
   // Spikes
   spikeDown = [game.add.sprite(416, 112, 'spikeDown'),
@@ -227,7 +220,7 @@ function update() {
 
   game.physics.arcade.collide(player, batGroup, function(player, batGroup) {
     if (batGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -50;
+      player.body.velocity.y = -300;
       batGroup.kill();
     } else {
       playerDie();
@@ -236,7 +229,7 @@ function update() {
 
   game.physics.arcade.collide(player, zombieGroup, function(player, zombieGroup) {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -50;
+      player.body.velocity.y = -300;
       zombieGroup.kill();
     } else {
       playerDie();
@@ -255,7 +248,7 @@ function update() {
 
 function render() {
   // Sprite debug info
-  game.debug.spriteInfo(player, 32, 32);
+  // game.debug.spriteInfo(player, 32, 32);
 }
 
 function collectPaper(player, paper) {

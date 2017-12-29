@@ -1,4 +1,3 @@
-# final_project
+# Super Skeleton Castle
 
-test from ubuntu laptop
-test from macbook pro
+A platformer made with the Phaser JavaScript library.

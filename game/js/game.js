@@ -18,8 +18,6 @@ function preload() {
 
   // Images
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
-  game.load.image('neon_tilest', 'assets/images/neon_tileset.png');
-  game.load.image('paper', 'assets/images/paper.png');
   game.load.image('spikeDown', 'assets/images/spike_down.png');
   game.load.image('background', 'assets/images/bg_grad.png');
 
@@ -56,7 +54,6 @@ var music;
 var jumpSound;
 
 // Collectible vars
-var papers;
 var score = 0;
 var scoreText;
 
@@ -70,7 +67,6 @@ function create() {
   map = game.add.tilemap('level1');
 
   map.addTilesetImage('simples_pimples');
-  map.addTilesetImage('neon_tilest');
 
   layer = map.createLayer('Tile Layer 1');
   layer.resizeWorld();
@@ -92,8 +88,7 @@ function create() {
   player.animations.add('left', [0, 1], 10, true);
   player.animations.add('right', [4, 5], 10, true);
 
-
-
+  // Bat info
   batGroup = game.add.group();
   game.physics.arcade.enable(batGroup, Phaser.Physics.ARCADE);
   batGroup.enableBody = true;
@@ -102,6 +97,7 @@ function create() {
   batGroup.callAll('animations.add', 'animations', 'bat-left', [0, 1], 5, true);
   batGroup.callAll('animations.play', 'animations', 'bat-left');
 
+  // Ghost info
   ghostGroup = game.add.physicsGroup();
   game.physics.arcade.enable(ghostGroup, Phaser.Physics.ARCADE);
   ghostGroup.enableBody = true;
@@ -115,6 +111,7 @@ function create() {
     ghostGroup.body.velocity.x = -25;
   });
 
+  // Zombie info
   zombieGroup = game.add.physicsGroup();
   game.physics.arcade.enable(zombieGroup, Phaser.Physics.ARCADE);
   zombieGroup.enableBody = true;
@@ -142,18 +139,18 @@ function create() {
   spikeDown.enablebody = true;
   game.physics.arcade.enable(spikeDown, Phaser.Physics.ARCADE);
 
-  // Papers
-  papers = game.add.group();
-  papers.enableBody = true;
-
-  for (var i = 0; i < 10; i++) {
-    var paper = papers.create(i * 70, 0, 'paper');
-    paper.body.gravity.y = 300;
-    paper.body.bounce.y = 0.3 + Math.random() * 0.2;
-  }
+  // Collectibles
+  // papers = game.add.group();
+  // papers.enableBody = true;
+  //
+  // for (var i = 0; i < 10; i++) {
+  //   var paper = papers.create(i * 70, 0, 'paper');
+  //   paper.body.gravity.y = 300;
+  //   paper.body.bounce.y = 0.3 + Math.random() * 0.2;
+  // }
 
   // The score
-  scoreText = game.add.text(8, 8, 'Papers Collected: 0/10', {
+  scoreText = game.add.text(8, 8, '000000', {
     fontSize: '12px',
     fill: '#FFFFFF'
   });
@@ -178,21 +175,21 @@ function create() {
 
 function update() {
 
-  //  Collide the player and the papers with the platforms
+  // Asset collision
   game.physics.arcade.collide(player, layer);
-  game.physics.arcade.collide(papers, layer);
   game.physics.arcade.collide(batGroup, layer);
   game.physics.arcade.collide(zombieGroup, layer);
+  // game.physics.arcade.collide(papers, layer);
 
-  //  Checks to see if the player overlaps with any of the papers, if he does call the collectPaper function
-  game.physics.arcade.overlap(player, papers, collectPaper, null, this);
+  // Overlap functions
   game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
   game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
+  // game.physics.arcade.overlap(player, papers, collectPaper, null, this);
 
   //  Reset the players velocity (movement)
   player.body.velocity.x = 0;
 
-
+  // Player controls
   if (controls.left.isDown) {
     //  Move to the left
     player.body.velocity.x = -100;
@@ -207,7 +204,7 @@ function update() {
     // player.frame = 3;
   }
 
-  //  Allow the player to jump if they are touching the ground.
+  //  Allow the player to jump if they are touching the ground
   if (jumpButton.isDown && player.body.onFloor()) {
     player.body.velocity.y = -350;
     jumpSound.play();
@@ -225,7 +222,9 @@ function update() {
     } else {
       playerDie();
     }
-  }, null, this);
+  });
+
+  // , null, this ^ if broken insert between } & );
 
   game.physics.arcade.collide(player, zombieGroup, function(player, zombieGroup) {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
@@ -234,7 +233,7 @@ function update() {
     } else {
       playerDie();
     }
-  }, null, this);
+  });
 
   zombieGroup.forEach(function(zombieGroup) {
     if (zombieGroup.body.velocity.x > 0) {
@@ -251,14 +250,14 @@ function render() {
   // game.debug.spriteInfo(player, 32, 32);
 }
 
-function collectPaper(player, paper) {
-  paper.kill();
-  score += 1;
-  scoreText.text = 'Papers Collected: ' + score + '/10';
-  if (score === 10) {
-    scoreText.text = 'You win!'
-  };
-}
+// function collectPaper(player, paper) {
+//   paper.kill();
+//   score += 1;
+//   scoreText.text = 'Papers Collected: ' + score + '/10';
+//   if (score === 10) {
+//     scoreText.text = 'You win!'
+//   };
+// }
 
 function gofull() {
   if (game.scale.isFullScreen) {

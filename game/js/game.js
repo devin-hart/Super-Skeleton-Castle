@@ -169,7 +169,7 @@ function create() {
   // }
 
 // Score
-  scoreText = game.add.text(8, 8, '000000', {
+  scoreText = game.add.text(8, 8, score, {
     fontSize: '12px',
     fill: '#FFFFFF'
   });
@@ -249,6 +249,8 @@ function update() {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       zombieGroup.kill();
+      score += 100;
+      scoreText.text = score;
     } else {
       playerDie();
     }

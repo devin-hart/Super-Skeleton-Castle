@@ -74,13 +74,13 @@ function create() {
   layer = map.createLayer('Tile Layer 1');
   layer.resizeWorld();
 
-  map.setCollisionByExclusion([0, 1758]);
+  map.setCollisionByExclusion([0, 108, 203, 253, 803, 1257, 1307, 1357, 1407, 1759]);
 // Collision debug
   // layer.debug = true;
 
 // Player
-  // player = game.add.sprite(32, game.world.height - 150, 'player');
-  player = game.add.sprite(1166, 192, 'player');
+  player = game.add.sprite(32, game.world.height - 150, 'player');
+  // player = game.add.sprite(1166, 192, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
 // Player physics properties
@@ -261,7 +261,7 @@ function update() {
 
 function render() {
 // Sprite debug info
-  game.debug.spriteInfo(player, 16, 16);
+  // game.debug.spriteInfo(player, 16, 16);
 }
 
 // function collectPaper(player, paper) {

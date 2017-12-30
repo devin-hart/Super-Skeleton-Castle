@@ -225,13 +225,18 @@ function create() {
 
 // Invisible walls info
   invisWall = game.add.group();
-  game.physics.arcade.enable(invisWall, Phaser.Physics.ARCADE);
+  // game.physics.arcade.enable(invisWall, Phaser.Physics.ARCADE);
   invisWall.enableBody = true;
-  invisWall.immovable = true;
+// Add more invisWalls below
+
+  invisWall.create(1056, 208, 'invisWall');
   invisWall.create(1152, 208, 'invisWall');
-  invisWall.create(1072, 208, 'invisWall');
 
 
+// invisWall properties
+  invisWall.setAll('body.immovable', true);
+  invisWall.setAll('body.moves', false);
+  invisWall.alpha = 0;
 
 // Collectibles
   // papers = game.add.group();
@@ -244,7 +249,7 @@ function create() {
   // }
 
 // Score
-  scoreText = game.add.text(8, 8, '000000', {
+  scoreText = game.add.text(8, 8, score, {
     fontSize: '12px',
     fill: '#FFFFFF'
   });
@@ -371,6 +376,8 @@ function update() {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       zombieGroup.kill();
+      score += 100;
+      scoreText.text = score;
     } else {
       playerDie();
     }

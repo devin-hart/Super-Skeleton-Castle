@@ -18,6 +18,7 @@ function preload() {
 
 // Images
   game.load.image('background', 'assets/images/bg_grad.png');
+  game.load.image('chest', 'assets/images/chest.png');
   game.load.image('invisWall', 'assets/images/invisible_wall.png');
   game.load.image('simples_pimples', 'assets/images/simples_pimples.png');
   game.load.image('spikeDown', 'assets/images/spike_down.png');
@@ -44,6 +45,7 @@ var map;
 var layer;
 var bg;
 var invisWall;
+var chest;
 
 // Player vars
 var player;
@@ -72,7 +74,6 @@ var scoreText;
 
 function create() {
   // game.world.setBounds(-1000, -1000, 2000, 2000);
-  // game.stage.backgroundColor = '#007800';
   bg = game.add.tileSprite(0, 0, 256, 240, 'background');
   bg.fixedToCamera = true;
 
@@ -85,13 +86,13 @@ function create() {
 
   map.setCollisionByExclusion([0, 108, 201, 203, 251, 253, 403, 803, 1257, 1307,
     453, 1357, 1407, 1759, 2006, 2007, 2051, 2052, 2053, 2055, 2056, 2057, 2101,
-    2102, 2306, 2307, 2355, 2356, 2357, 2404, 2454, 2503, 2504, 2552]);
+    2102, 2306, 2307, 2309, 2355, 2356, 2357, 2359, 2404, 2454, 2503, 2504, 2552]);
 // Collision debug
   // layer.debug = true;
 
 // Player
-  player = game.add.sprite(32, game.world.height - 150, 'player');
-  // player = game.add.sprite(1166, 192, 'player');
+  // player = game.add.sprite(32, game.world.height - 150, 'player');
+  player = game.add.sprite(2288, 112, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
 // Player physics properties
@@ -101,12 +102,24 @@ function create() {
   player.animations.add('left', [0, 1], 10, true);
   player.animations.add('right', [4, 5], 10, true);
 
+// Chest
+  chest = game.add.sprite(3568, 128, 'chest');
+  chest.enablebody = true;
+  game.physics.arcade.enable(chest, Phaser.Physics.ARCADE);
+
+
 // Bat info
   batGroup = game.add.group();
   game.physics.arcade.enable(batGroup, Phaser.Physics.ARCADE);
   batGroup.enableBody = true;
-  batGroup.create(464, 32, 'bat');
-  batGroup.create(512, 32, 'bat');
+  batGroup.create(496, 192, 'bat');
+  batGroup.create(1184, 48, 'bat');
+  batGroup.create(832, 208, 'bat');
+  batGroup.create(1232, 48, 'bat');
+  batGroup.create(3056, 160, 'bat');
+  batGroup.create(3168, 160, 'bat');
+  batGroup.create(3216, 160, 'bat');
+
   batGroup.callAll('animations.add', 'animations', 'bat-left', [0, 1], 5, true);
   batGroup.callAll('animations.play', 'animations', 'bat-left');
 
@@ -116,12 +129,15 @@ function create() {
   devilGroup.enableBody = true;
   devilGroup.checkWorldBounds = true;
   devilGroup.outOfBoundsKill = true;
-  // devilGroup.create(1120, 208, 'devil');
-  devilGroup.callAll('animations.add', 'animations', 'devil-left', [0, 1, 2], 5, true);
-  devilGroup.callAll('animations.add', 'animations', 'devil-right', [3, 4, 5], 5, true);
+  devilGroup.create(1564, 64, 'devil');
+  devilGroup.create(1888, 128, 'devil');
+  devilGroup.create(2064, 128, 'devil');
+  devilGroup.create(2192, 128, 'devil');
+  devilGroup.callAll('animations.add', 'animations', 'devil-left', [0, 1, 2], 6, true);
+  devilGroup.callAll('animations.add', 'animations', 'devil-right', [3, 4, 5], 6, true);
 
   devilGroup.forEach(function(devilGroup) {
-    devilGroup.body.velocity.x = -10;
+    devilGroup.body.velocity.x = -75;
     devilGroup.body.bounce.x = 1;
     devilGroup.body.gravity.y = 1500;
   });
@@ -131,12 +147,15 @@ function create() {
   ghostGroup.enableBody = true;
   ghostGroup.checkWorldBounds = true;
   ghostGroup.outOfBoundsKill = true;
-  ghostGroup.create(48, 100, 'ghost');
+  ghostGroup.create(336, 144, 'ghost');
+  ghostGroup.create(832, 144, 'ghost');
   ghostGroup.callAll('animations.add', 'animations', 'ghost-left', [0, 1, 2], 5, true);
+  ghostGroup.callAll('animations.add', 'animations', 'ghost-right', [3, 4, 5], 5, true);
   ghostGroup.callAll('animations.play', 'animations', 'ghost-left');
 
   ghostGroup.forEach(function(ghostGroup) {
-    ghostGroup.body.velocity.x = -25;
+    ghostGroup.body.velocity.x = -50;
+    ghostGroup.body.bounce.x = 1;
   });
 
 // Goblin info
@@ -145,12 +164,14 @@ function create() {
   goblinGroup.enableBody = true;
   goblinGroup.checkWorldBounds = true;
   goblinGroup.outOfBoundsKill = true;
-  // goblinGroup.create(1120, 208, 'goblin');
+  goblinGroup.create(624, 256, 'goblin');
+  goblinGroup.create(736, 176, 'goblin');
+  goblinGroup.create(1008, 64, 'goblin');
   goblinGroup.callAll('animations.add', 'animations', 'goblin-left', [0, 1, 2], 5, true);
   goblinGroup.callAll('animations.add', 'animations', 'goblin-right', [3, 4, 5], 5, true);
 
   goblinGroup.forEach(function(goblinGroup) {
-    goblinGroup.body.velocity.x = -10;
+    goblinGroup.body.velocity.x = -50;
     goblinGroup.body.bounce.x = 1;
     goblinGroup.body.gravity.y = 1500;
 });
@@ -161,14 +182,16 @@ function create() {
   redSkeletonGroup.enableBody = true;
   redSkeletonGroup.checkWorldBounds = true;
   redSkeletonGroup.outOfBoundsKill = true;
-  // redSkeletonGroup.create(1120, 208, 'redSkeleton');
-  redSkeletonGroup.callAll('animations.add', 'animations', 'redSkeleton-left', [0, 1, 2], 5, true);
+  redSkeletonGroup.create(2320, 96, 'redSkeleton');
+  redSkeletonGroup.create(2528, 176, 'redSkeleton');
+  redSkeletonGroup.create(2608, 160, 'redSkeleton');
+  redSkeletonGroup.callAll('animations.add', 'animations', 'redSkeleton-left', [1], 1, true);
   redSkeletonGroup.callAll('animations.add', 'animations', 'redSkeleton-right', [3, 4, 5], 5, true);
 
   redSkeletonGroup.forEach(function(redSkeletonGroup) {
-    redSkeletonGroup.body.velocity.x = -10;
     redSkeletonGroup.body.bounce.x = 1;
-    redSkeletonGroup.body.gravity.y = 1500;
+    redSkeletonGroup.body.bounce.y = 1;
+    redSkeletonGroup.body.velocity.y = -25;
   });
 
 // Yellow Skeleton info
@@ -178,12 +201,20 @@ function create() {
   yellowSkeletonGroup.enableBody = true;
   yellowSkeletonGroup.checkWorldBounds = true;
   yellowSkeletonGroup.outOfBoundsKill = true;
-  // yellowSkeletonGroup.create(1120, 208, 'yellowSkeleton');
+  yellowSkeletonGroup.create(2432, 160, 'yellowSkeleton');
+  yellowSkeletonGroup.create(2688, 160, 'yellowSkeleton');
+  yellowSkeletonGroup.create(2896, 240, 'yellowSkeleton');
+  yellowSkeletonGroup.create(2960, 240, 'yellowSkeleton');
+  yellowSkeletonGroup.create(3344, 144, 'yellowSkeleton');
+  yellowSkeletonGroup.create(3392, 144, 'yellowSkeleton');
+  yellowSkeletonGroup.create(3456, 128, 'yellowSkeleton');
+  yellowSkeletonGroup.create(3504, 128, 'yellowSkeleton');
+  yellowSkeletonGroup.create(3552, 128, 'yellowSkeleton');
   yellowSkeletonGroup.callAll('animations.add', 'animations', 'yellowSkeleton-left', [0, 1, 2], 5, true);
   yellowSkeletonGroup.callAll('animations.add', 'animations', 'yellowSkeleton-right', [3, 4, 5], 5, true);
 
   yellowSkeletonGroup.forEach(function(yellowSkeletonGroup) {
-    yellowSkeletonGroup.body.velocity.x = -10;
+    yellowSkeletonGroup.body.velocity.x = -30;
     yellowSkeletonGroup.body.bounce.x = 1;
     yellowSkeletonGroup.body.gravity.y = 1500;
   });
@@ -194,7 +225,8 @@ function create() {
   zombieGroup.enableBody = true;
   zombieGroup.checkWorldBounds = true;
   zombieGroup.outOfBoundsKill = true;
-  zombieGroup.create(1120, 208, 'zombie');
+  zombieGroup.create(144, 208, 'zombie');
+  zombieGroup.create(244, 208, 'zombie');
   zombieGroup.callAll('animations.add', 'animations', 'zombie-left', [0, 1, 2], 5, true);
   zombieGroup.callAll('animations.add', 'animations', 'zombie-right', [3, 4, 5], 5, true);
 
@@ -206,20 +238,31 @@ function create() {
 
 // Spike Down info
   spikeDown = [
-    game.add.sprite(416, 112, 'spikeDown'),
-    game.add.sprite(432, 112, 'spikeDown'),
-    game.add.sprite(448, 112, 'spikeDown'),
-    game.add.sprite(480, 112, 'spikeDown'),
-    game.add.sprite(496, 112, 'spikeDown'),
-    game.add.sprite(528, 112, 'spikeDown'),
-    game.add.sprite(544, 112, 'spikeDown')
+    game.add.sprite(800, 272, 'spikeDown'),
+    game.add.sprite(816, 272, 'spikeDown'),
+    game.add.sprite(1088, 112, 'spikeDown'),
+    game.add.sprite(1104, 112, 'spikeDown'),
+    game.add.sprite(1152, 112, 'spikeDown'),
+    game.add.sprite(1168, 112, 'spikeDown'),
+    game.add.sprite(1200, 112, 'spikeDown'),
+    game.add.sprite(1216, 112, 'spikeDown'),
+    game.add.sprite(1248, 112, 'spikeDown'),
+    game.add.sprite(1264, 112, 'spikeDown'),
+    game.add.sprite(1408, 144, 'spikeDown'),
+    game.add.sprite(1424, 128, 'spikeDown'),
+    game.add.sprite(1456, 128, 'spikeDown')
   ];
 
   spikeDown.enablebody = true;
   game.physics.arcade.enable(spikeDown, Phaser.Physics.ARCADE);
 
 // Spike Up info
-  spikeUp = [];
+  spikeUp = [
+    game.add.sprite(544, 208, 'spikeUp'),
+    game.add.sprite(848, 224, 'spikeUp'),
+    game.add.sprite(896, 32, 'spikeUp'),
+    game.add.sprite(912, 32, 'spikeUp')
+  ];
 
   spikeUp.enablebody = true;
   game.physics.arcade.enable(spikeUp, Phaser.Physics.ARCADE);
@@ -230,24 +273,35 @@ function create() {
   invisWall.enableBody = true;
 // Add more invisWalls below
 
-  invisWall.create(1056, 208, 'invisWall');
-  invisWall.create(1152, 208, 'invisWall');
+  invisWall.create(272, 144, 'invisWall');
+  invisWall.create(464, 144, 'invisWall');
+  invisWall.create(528, 256, 'invisWall');
+  invisWall.create(672, 176, 'invisWall');
+  invisWall.create(784, 176, 'invisWall');
+  invisWall.create(944, 64, 'invisWall');
+  invisWall.create(1152, 64, 'invisWall');
+  invisWall.create(1504, 64, 'invisWall');
+  invisWall.create(1680, 64, 'invisWall');
+  invisWall.create(1824, 128, 'invisWall');
+  invisWall.create(1952, 128, 'invisWall');
+  invisWall.create(2016, 128, 'invisWall');
+  invisWall.create(2128, 128, 'invisWall');
+  invisWall.create(2320, 64, 'invisWall');
+  invisWall.create(2464, 160, 'invisWall');
+  invisWall.create(2528, 144, 'invisWall');
+  invisWall.create(2608, 128, 'invisWall');
+  invisWall.create(2640, 160, 'invisWall');
+  invisWall.create(2720, 160, 'invisWall');
+  invisWall.create(3312, 144, 'invisWall');
+  invisWall.create(3424, 128, 'invisWall');
+  invisWall.create(3424, 144, 'invisWall');
+
 
 
 // invisWall properties
   invisWall.setAll('body.immovable', true);
   invisWall.setAll('body.moves', false);
   invisWall.alpha = 0;
-
-// Collectibles
-  // papers = game.add.group();
-  // papers.enableBody = true;
-  //
-  // for (var i = 0; i < 10; i++) {
-  //   var paper = papers.create(i * 70, 0, 'paper');
-  //   paper.body.gravity.y = 300;
-  //   paper.body.bounce.y = 0.3 + Math.random() * 0.2;
-  // }
 
 // Score
   scoreText = game.add.text(8, 8, score, {
@@ -288,6 +342,7 @@ function update() {
   game.physics.arcade.collide(goblinGroup, invisWall);
 
   game.physics.arcade.collide(ghostGroup, invisWall);
+  game.physics.arcade.collide(ghostGroup, layer);
 
   game.physics.arcade.collide(redSkeletonGroup, layer);
   game.physics.arcade.collide(redSkeletonGroup, invisWall);
@@ -298,9 +353,9 @@ function update() {
   game.physics.arcade.collide(zombieGroup, layer);
   game.physics.arcade.collide(zombieGroup, invisWall);
 
-  // game.physics.arcade.collide(papers, layer);
-
 // Overlap functions
+  game.physics.arcade.overlap(player, chest, playerDie, null, this);
+  game.physics.arcade.overlap(player, devilGroup, playerDie, null, this);
   game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
   game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
   game.physics.arcade.overlap(player, spikeUp, playerDie, null, this);
@@ -339,17 +394,19 @@ function update() {
     if (batGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       batGroup.kill();
+      score += 25;
+      scoreText.text = score;
     } else {
       playerDie();
     }
   });
 
-  // , null, this ^ if broken insert between } & );
-
   game.physics.arcade.collide(player, goblinGroup, function(player, goblinGroup) {
     if (goblinGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       goblinGroup.kill();
+      score += 100;
+      scoreText.text = score;
     } else {
       playerDie();
     }
@@ -359,6 +416,8 @@ function update() {
     if (redSkeletonGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       redSkeletonGroup.kill();
+      score += 150;
+      scoreText.text = score;
     } else {
       playerDie();
     }
@@ -368,6 +427,8 @@ function update() {
     if (yellowSkeletonGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       yellowSkeletonGroup.kill();
+      score += 100;
+      scoreText.text = score;
     } else {
       playerDie();
     }
@@ -377,7 +438,7 @@ function update() {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       zombieGroup.kill();
-      score += 100;
+      score += 50;
       scoreText.text = score;
     } else {
       playerDie();
@@ -448,15 +509,6 @@ function render() {
 // Sprite debug info
   // game.debug.spriteInfo(player, 16, 16);
 }
-
-// function collectPaper(player, paper) {
-//   paper.kill();
-//   score += 1;
-//   scoreText.text = 'Papers Collected: ' + score + '/10';
-//   if (score === 10) {
-//     scoreText.text = 'You win!'
-//   };
-// }
 
 function goFullScreen() {
   if (game.scale.isFullScreen) {

@@ -91,8 +91,8 @@ function create() {
   // layer.debug = true;
 
 // Player
-  // player = game.add.sprite(32, game.world.height - 150, 'player');
-  player = game.add.sprite(2288, 112, 'player');
+  player = game.add.sprite(32, game.world.height - 150, 'player');
+  // player = game.add.sprite(2288, 112, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
 // Player physics properties

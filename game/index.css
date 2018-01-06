@@ -1,0 +1,13 @@
+html {
+  background-color: black;
+}
+
+.game {
+  margin: auto;
+  display: block;
+  width: 40%;
+}
+
+canvas {
+  margin: auto;
+}

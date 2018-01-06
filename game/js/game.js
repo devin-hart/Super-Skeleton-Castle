@@ -91,8 +91,8 @@ function create() {
   // layer.debug = true;
 
 // Player
-  // player = game.add.sprite(32, game.world.height - 150, 'player');
-  player = game.add.sprite(2288, 112, 'player');
+  player = game.add.sprite(32, game.world.height - 150, 'player');
+  // player = game.add.sprite(2288, 112, 'player');
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
 // Player physics properties
@@ -301,7 +301,7 @@ function create() {
 // invisWall properties
   invisWall.setAll('body.immovable', true);
   invisWall.setAll('body.moves', false);
-  invisWall.alpha = 1;
+  invisWall.alpha = 0;
 
 // Score
   scoreText = game.add.text(8, 8, score, {

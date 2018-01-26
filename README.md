@@ -1,5 +1,7 @@
 # Super Skeleton Castle
 
+![logo](https://github.com/devin-hart/Super-Skeleton-Castle/blob/master/assets/images/site_title_screen.png)
+
 My final project for New York Code and Design Academy.
 
 A retro style platformer made with the Phaser JavaScript library.
@@ -18,3 +20,9 @@ A retro style platformer made with the Phaser JavaScript library.
 
 * [Phaser](http://www.phaser.io) - A JavaScript game building framework
 * [Tiled](http://www.mapeditor.org) - A 2D level editor that provides JSON data for level design
+
+## Artwork
+
+Sky background and Super Skeleton Castle logo created by Devin Hart (me).
+
+Enemy and terrain spritesheet art used: [Open Game Art - Simples Pimples](https://opengameart.org/content/simple-broad-purpose-tileset)

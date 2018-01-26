@@ -2,7 +2,9 @@
 
 ![logo](https://github.com/devin-hart/Super-Skeleton-Castle/blob/master/assets/images/site_title_screen.png)
 
-My final project for New York Code and Design Academy.
+Final project for New York Code and Design Academy.
+
+
 
 A retro style platformer made with the Phaser JavaScript library.
 

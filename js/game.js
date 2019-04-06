@@ -349,33 +349,22 @@ function update() {
 // Asset collision
   game.physics.arcade.collide(player, layer);
 
-  game.physics.arcade.collide(batGroup, layer);
-  game.physics.arcade.collide(batGroup, invisWall);
+  let enemiesArray = [batGroup, devilGroup, goblinGroup, ghostGroup, redSkeletonGroup, yellowSkeletonGroup, zombieGroup];
 
-  game.physics.arcade.collide(devilGroup, layer);
-  game.physics.arcade.collide(devilGroup, invisWall);
+  enemiesArray.forEach((enemy) => {
+    game.physics.arcade.collide(enemy, layer);
+    game.physics.arcade.collide(enemy, invisWall);
+  });
 
-  game.physics.arcade.collide(goblinGroup, layer);
-  game.physics.arcade.collide(goblinGroup, invisWall);
-
-  game.physics.arcade.collide(ghostGroup, invisWall);
-  game.physics.arcade.collide(ghostGroup, layer);
-
-  game.physics.arcade.collide(redSkeletonGroup, layer);
-  game.physics.arcade.collide(redSkeletonGroup, invisWall);
-
-  game.physics.arcade.collide(yellowSkeletonGroup, layer);
-  game.physics.arcade.collide(yellowSkeletonGroup, invisWall);
-
-  game.physics.arcade.collide(zombieGroup, layer);
-  game.physics.arcade.collide(zombieGroup, invisWall);
 
 // Overlap functions
   game.physics.arcade.overlap(player, chest, youWin, null, this);
-  game.physics.arcade.overlap(player, devilGroup, playerDie, null, this);
-  game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
-  game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
-  game.physics.arcade.overlap(player, spikeUp, playerDie, null, this);
+  let instantDeathArr = [devilGroup, ghostGroup, spikeDown, spikeUp];
+
+  instantDeathArr.forEach((death) => {
+    game.physics.arcade.overlap(player, death, playerDie, null, this);
+  })
+
   // game.physics.arcade.overlap(player, papers, collectPaper, null, this);
 
 // Reset the players velocity (movement)
@@ -406,66 +395,23 @@ function update() {
     playerDie();
   }
 
+
 // Kill enemy on jump (bat, goblin, red and yellow skeleton, zombie)
-  game.physics.arcade.collide(player, batGroup, function(player, batGroup) {
-    if (batGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -300;
-      batGroup.kill();
-      enemyDead.play();
-      score += 25;
-      scoreText.text = score;
-    } else {
-      playerDie();
-    }
-  });
-
-  game.physics.arcade.collide(player, goblinGroup, function(player, goblinGroup) {
-    if (goblinGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -300;
-      goblinGroup.kill();
-      enemyDead.play();
-      score += 100;
-      scoreText.text = score;
-    } else {
-      playerDie();
-    }
-  });
-
-  game.physics.arcade.collide(player, redSkeletonGroup, function(player, redSkeletonGroup) {
-    if (redSkeletonGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -300;
-      redSkeletonGroup.kill();
-      enemyDead.play();
-      score += 150;
-      scoreText.text = score;
-    } else {
-      playerDie();
-    }
-  });
-
-  game.physics.arcade.collide(player, yellowSkeletonGroup, function(player, yellowSkeletonGroup) {
-    if (yellowSkeletonGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -300;
-      yellowSkeletonGroup.kill();
-      enemyDead.play();
-      score += 100;
-      scoreText.text = score;
-    } else {
-      playerDie();
-    }
-  });
-
-  game.physics.arcade.collide(player, zombieGroup, function(player, zombieGroup) {
-    if (zombieGroup.body.touching.up && player.body.touching.down) {
-      player.body.velocity.y = -300;
-      zombieGroup.kill();
-      enemyDead.play();
-      score += 50;
-      scoreText.text = score;
-    } else {
-      playerDie();
-    }
-  });
+  let killableEnemies = [batGroup, goblinGroup, redSkeletonGroup, yellowSkeletonGroup, zombieGroup];
+  
+  killableEnemies.forEach((enemy) => {
+    game.physics.arcade.collide(player, enemy, function(player, enemy) {
+      if (enemy.body.touching.up && player.body.touching.down) {
+        player.body.velocity.y = -300;
+        enemy.kill();
+        enemyDead.play();
+        score += 25;
+        scoreText.text = score;
+      } else {
+        playerDie();
+      }
+    });
+  })
 
 // Render left and right animation
 

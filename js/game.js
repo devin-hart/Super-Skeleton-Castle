@@ -1,6 +1,6 @@
 // NES Res 256, 240
 
-var game = new Phaser.Game(256, 240, Phaser.AUTO, '', {
+var game = new Phaser.Game(256, 240, Phaser.AUTO, 'game-window', {
   preload: preload,
   create: create,
   update: update,
@@ -37,6 +37,8 @@ function preload() {
 // Audio
   game.load.audio('music', 'assets/audio/music.mp3');
   game.load.audio('jump', 'assets/audio/jump.wav');
+  game.load.audio('pitfall', 'assets/audio/pitfall.wav');
+  game.load.audio('enemydead', 'assets/audio/enemydead.wav');
 
 };
 
@@ -66,10 +68,14 @@ var zombieGroup;
 // SFX vars
 var music;
 var jumpSound;
+var pitfall;
+var enemyDead;
 
 // Collectible vars
 var score = 0;
 var scoreText;
+
+var chestText;
 
 
 function create() {
@@ -91,10 +97,19 @@ function create() {
   // layer.debug = true;
 
 // Player
+
+  // Beginning of level spawn
   player = game.add.sprite(32, game.world.height - 150, 'player');
+
+  // Castle Spawn
   // player = game.add.sprite(2288, 112, 'player');
+
+  // End of level spawn
+  // player = game.add.sprite(3263, 160, 'player');
+
   game.physics.arcade.enable(player, Phaser.Physics.ARCADE);
   game.camera.follow(player);
+
 // Player physics properties
   player.body.bounce.y = 0.1;
   player.body.gravity.y = 1500;
@@ -321,6 +336,8 @@ function create() {
   music.loopFull();
 
   jumpSound = game.add.audio('jump');
+  pitfall = game.add.audio('pitfall');
+  enemyDead = game.add.audio('enemydead');
 
 // Click to go full screen
   game.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
@@ -354,7 +371,7 @@ function update() {
   game.physics.arcade.collide(zombieGroup, invisWall);
 
 // Overlap functions
-  game.physics.arcade.overlap(player, chest, playerDie, null, this);
+  game.physics.arcade.overlap(player, chest, youWin, null, this);
   game.physics.arcade.overlap(player, devilGroup, playerDie, null, this);
   game.physics.arcade.overlap(player, ghostGroup, playerDie, null, this);
   game.physics.arcade.overlap(player, spikeDown, playerDie, null, this);
@@ -394,6 +411,7 @@ function update() {
     if (batGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       batGroup.kill();
+      enemyDead.play();
       score += 25;
       scoreText.text = score;
     } else {
@@ -405,6 +423,7 @@ function update() {
     if (goblinGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       goblinGroup.kill();
+      enemyDead.play();
       score += 100;
       scoreText.text = score;
     } else {
@@ -416,6 +435,7 @@ function update() {
     if (redSkeletonGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       redSkeletonGroup.kill();
+      enemyDead.play();
       score += 150;
       scoreText.text = score;
     } else {
@@ -427,6 +447,7 @@ function update() {
     if (yellowSkeletonGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       yellowSkeletonGroup.kill();
+      enemyDead.play();
       score += 100;
       scoreText.text = score;
     } else {
@@ -438,6 +459,7 @@ function update() {
     if (zombieGroup.body.touching.up && player.body.touching.down) {
       player.body.velocity.y = -300;
       zombieGroup.kill();
+      enemyDead.play();
       score += 50;
       scoreText.text = score;
     } else {
@@ -521,5 +543,15 @@ function goFullScreen() {
 function playerDie() {
   score = 0;
   music.stop();
+  pitfall.play();
   game.state.start(game.state.current);
 }
+
+function youWin() {
+  chestText = game.add.text(90, 75, 'You Win!', {
+    fontSize: '18px',
+    fill: '#FFFFFF'
+  });
+
+  chestText.fixedToCamera = true;
+};

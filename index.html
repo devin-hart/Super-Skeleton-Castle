@@ -5,27 +5,35 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
 	<title>--\\ Super Skeleton Castle //--</title>
-	<script type="text/javascript" src="js/phaser.js"></script>
+  <script type="text/javascript" src="js/phaser.js"></script>
+  <script type="text/javascript" src="js/game.js"></script>
 	<link rel="stylesheet" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
+	<link rel="stylesheet" href="../css/skeleton.css">
 	<link rel="stylesheet" href="index.css">
-
-	<!-- <script type="text/javascript" src="js/boot.js"></script>
-	<script type="text/javascript" src="js/title.js"></script> -->
-
-	<!-- <script type="text/javascript" src="js/end.js"></script>
-	<script type="text/javascript" src="js/main.js"></script> -->
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
 
 </head>
 
 <body>
 
+	<nav>
+			<a href="http://devin-hart.github.io">/// .devinhart</a>
+			<a href="https://github.com/devin-hart">/// .github</a>
+			<a href="https://www.linkedin.com/in/devin-hart/">/// .linkedin</a>
+			<a href="mailto:devohart@gmail.com">/// .email</a>
+	</nav>
 
-		<div class="game">
-			<img src="assets/images/site_title_screen.png" alt="">
-			<script type="text/javascript" src="js/game.js"></script>
-			<img src="assets/images/instructions.png" alt="">
+	<div class="container">
+		<div class="row">
+			<div class="twelve columns">
+				<div class="game">
+          <img src="assets/images/site_title_screen.png" alt="">
+          <div id="game-window"></div>
+          <img src="assets/images/instructions.png" alt="">
+				</div>
+			</div>
 		</div>
-
+	</div>
 </body>
 
 </html>
